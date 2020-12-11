@@ -121,6 +121,20 @@ defmodule Elasticsearch.Index.Bulk do
   end
 
   defp put_bulk_page(config, index_name, items) when is_list(items) do
+    case Application.get_application(:telemetry) do
+      nil ->
+        do_put_bulk_page(config, index_name, items)
+
+      :telemetry ->
+        :telemetry.span(
+          [:elasticsearch, :bulk, :put_bulk_page],
+          %{index: index_name},
+          fn -> do_put_bulk_page(config, index_name, items) end
+        )
+    end
+  end
+
+  defp do_put_bulk_page(config, index_name, items) do
     Elasticsearch.put(config, "/#{index_name}/_doc/_bulk", Enum.join(items))
   end
 
