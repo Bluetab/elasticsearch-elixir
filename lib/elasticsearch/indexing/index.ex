@@ -291,7 +291,7 @@ defmodule Elasticsearch.Index do
   def create_from_settings(cluster, name, settings)
 
   def create_from_settings(cluster, name, settings) when is_map(settings) do
-    create(cluster, name, settings)
+    create(cluster, name, %{settings: settings})
   end
 
   def create_from_settings(cluster, name, file) do
