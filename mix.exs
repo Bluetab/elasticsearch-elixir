@@ -6,7 +6,7 @@ defmodule Elasticsearch.Mixfile do
       app: :elasticsearch,
       description: "Elasticsearch without DSLs",
       source_url: "https://github.com/danielberkompas/elasticsearch-elixir",
-      version: "1.0.0",
+      version: "1.1.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -16,7 +16,7 @@ defmodule Elasticsearch.Mixfile do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test,
-        "coveralls.travis": :test
+        "coveralls.semaphore": :test
       ],
       docs: docs(),
       deps: deps(),
@@ -60,11 +60,13 @@ defmodule Elasticsearch.Mixfile do
     [
       {:poison, ">= 0.0.0", optional: true},
       {:httpoison, ">= 0.0.0"},
-      {:vex, "~> 0.6.0"},
-      {:sigaws, "~> 0.7", optional: true},
+      {:telemetry, "~> 0.4.3 or ~> 1.0"},
+      {:vex, "~> 0.6"},
+      {:sigaws_otp_24, "~> 1.0", optional: true},
       {:postgrex, ">= 0.0.0", only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: [:dev, :test]},
       {:ecto, ">= 0.0.0", only: [:dev, :test]},
+      {:ecto_sql, ">= 0.0.0", only: [:dev, :test]},
       {:excoveralls, ">= 0.0.0", only: :test}
     ]
   end

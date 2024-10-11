@@ -5,6 +5,24 @@ defmodule Elasticsearch do
   You should configure at least one `Elasticsearch.Cluster` in order to
   use the functions in this module, or else you'll need to pass all the
   configuration for the cluster into each function call.
+
+  ### Telemetry
+
+  The following events are published:
+
+    * `[:elasticsearch, :request, :start]` - emitted at the beginning of the request to Elasticsearch.
+      * Measurement: `%{system_time: System.system_time()}`
+      * Metadata: `%{telemetry_span_context: term(), config: Elasticsearch.Cluster.config(),
+        method: Elasticsearch.API.method(), url: Elasticsearch.API.url(), data: Elasticsearch.API.data()}`
+
+    * `[:elasticsearch, :request, :stop]` - emitted at the end of the request to Elasticsearch.
+      * Measurement: `%{duration: native_time}`
+      * Metadata: `%{telemetry_span_context: term(), result: Elasticsearch.API.response()}`
+
+    * `[:elasticsearch, :request, :exception]` - emitted when an exception has been raised.
+      * Measurement: `%{system_time: System.system_time()}`
+      * Metadata: `%{telemetry_span_context: term(), kind: Exception.kind(), reason: term(),
+        stacktrace: Exception.stacktrace()}`
   """
 
   alias Elasticsearch.{
@@ -230,7 +248,7 @@ defmodule Elasticsearch do
     config = Config.get(cluster)
 
     config
-    |> config.api.request(:get, url, "", opts)
+    |> do_request(:get, url, "", opts)
     |> format()
   end
 
@@ -286,7 +304,7 @@ defmodule Elasticsearch do
     config = Config.get(cluster)
 
     config
-    |> config.api.request(:put, url, data, opts)
+    |> do_request(:put, url, data, opts)
     |> format()
   end
 
@@ -337,7 +355,7 @@ defmodule Elasticsearch do
     config = Config.get(cluster)
 
     config
-    |> config.api.request(:post, url, data, opts)
+    |> do_request(:post, url, data, opts)
     |> format()
   end
 
@@ -399,7 +417,7 @@ defmodule Elasticsearch do
     config = Config.get(cluster)
 
     config
-    |> config.api.request(:delete, url, "", opts)
+    |> do_request(:delete, url, "", opts)
     |> format()
   end
 
@@ -423,6 +441,70 @@ defmodule Elasticsearch do
     cluster
     |> delete(url, opts)
     |> unwrap!()
+  end
+
+  @doc """
+  Determines whether a resource exists at a given Elasticsearch path
+
+  ## Examples
+
+      iex> Index.create_from_file(Cluster, "posts", "test/support/settings/posts.json")
+      ...> Elasticsearch.head(Cluster, "/posts")
+      {:ok, ""}
+
+  It returns an error if the given resource does not exist.
+
+      iex> Elasticsearch.head(Cluster, "/nonexistent")
+      {:error,
+      %Elasticsearch.Exception{
+        col: nil,
+        line: nil,
+        message: "",
+        query: nil,
+        raw: nil,
+        status: nil,
+        type: nil
+      }}
+  """
+  @spec head(Cluster.t(), url) :: response
+  @spec head(Cluster.t(), url, opts) :: response
+  def head(cluster, url, opts \\ []) do
+    config = Config.get(cluster)
+
+    config
+    |> do_request(:head, url, "", opts)
+    |> format()
+  end
+
+  @doc """
+  Same as `head/1`, but returns the response and raises errors.
+
+  ## Examples
+
+      iex> Index.create_from_file(Cluster, "posts", "test/support/settings/posts.json")
+      ...> Elasticsearch.head!(Cluster, "/posts")
+      ""
+
+  Raises an error if the resource is invalid.
+
+      iex> Elasticsearch.head!(Cluster, "/nonexistent")
+      ** (Elasticsearch.Exception)
+  """
+  @spec head!(Cluster.t(), url) :: map | no_return
+  @spec head!(Cluster.t(), url, opts) :: map | no_return
+  def head!(cluster, url, opts \\ []) do
+    cluster
+    |> head(url, opts)
+    |> unwrap!()
+  end
+
+  defp do_request(config, method, url, data, opts) do
+    start_metadata = %{config: config, method: method, url: url, data: data}
+
+    :telemetry.span([:elasticsearch, :request], start_metadata, fn ->
+      result = config.api.request(config, method, url, data, opts)
+      {result, %{result: result}}
+    end)
   end
 
   defp format({:ok, %{status_code: code, body: body}})

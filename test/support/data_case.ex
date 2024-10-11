@@ -1,5 +1,6 @@
 defmodule Elasticsearch.DataCase do
   @moduledoc false
+
   # This module defines the setup for tests requiring
   # access to the application's data layer.
   #
@@ -32,7 +33,7 @@ defmodule Elasticsearch.DataCase do
       Ecto.Adapters.SQL.Sandbox.mode(Elasticsearch.Test.Repo, {:shared, self()})
     end
 
-    Logger.configure(level: :warn)
+    Logger.configure(level: :warning)
 
     :ok
   end
