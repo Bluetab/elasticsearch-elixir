@@ -22,3 +22,5 @@ erl_crash.dump
 vendor/
 .elixir_ls/
 .devcontainer/
+
+.tool-versions
