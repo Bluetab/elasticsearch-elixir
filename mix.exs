@@ -59,7 +59,7 @@ defmodule Elasticsearch.Mixfile do
   defp deps do
     [
       {:poison, ">= 0.0.0", optional: true},
-      {:httpoison, ">= 0.0.0"},
+      {:httpoison, "~> 2.2.3"},
       {:telemetry, "~> 0.4.3 or ~> 1.0"},
       {:vex, "~> 0.6"},
       {:sigaws_otp_24, "~> 1.0", optional: true},
