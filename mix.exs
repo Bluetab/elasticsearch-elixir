@@ -6,7 +6,7 @@ defmodule Elasticsearch.Mixfile do
       app: :elasticsearch,
       description: "Elasticsearch without DSLs",
       source_url: "https://github.com/danielberkompas/elasticsearch-elixir",
-      version: "1.1.0",
+      version: "8.6.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -58,12 +58,13 @@ defmodule Elasticsearch.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:decimal, "~> 3.0", override: true},
       {:poison, ">= 0.0.0", optional: true},
       {:httpoison, "~> 2.2.3"},
       {:telemetry, "~> 0.4.3 or ~> 1.0"},
       {:vex, "~> 0.6"},
       {:sigaws_otp_24, "~> 1.0", optional: true},
-      {:postgrex, ">= 0.0.0", only: [:dev, :test]},
+      {:postgrex, ">= 0.22.2", only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: [:dev, :test]},
       {:ecto, ">= 0.0.0", only: [:dev, :test]},
       {:ecto_sql, ">= 0.0.0", only: [:dev, :test]},

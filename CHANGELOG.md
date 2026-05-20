@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.6.0] 2026-05-20
+
+### Fixed
+
+-[TD-8162] Vulnerabilities
+
+
 ## [v1.1.0](https://github.com/danielberkompas/elasticsearch-elixir/tree/v1.1.0) (2023-09-15)
 
 [Full Changelog](https://github.com/danielberkompas/elasticsearch-elixir/compare/v1.0.1...v1.1.0)
