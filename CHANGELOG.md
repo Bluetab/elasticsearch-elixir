@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+-[TD-8299] Vulnerabilities
+
+
+
 ## [8.6.0] 2026-05-20
 
 ### Fixed

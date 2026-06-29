@@ -60,7 +60,7 @@ defmodule Elasticsearch.Mixfile do
     [
       {:decimal, "~> 3.0", override: true},
       {:poison, ">= 0.0.0", optional: true},
-      {:httpoison, "~> 2.2.3"},
+      {:httpoison, "~> 3.0"},
       {:telemetry, "~> 0.4.3 or ~> 1.0"},
       {:vex, "~> 0.6"},
       {:sigaws_otp_24, "~> 1.0", optional: true},
